@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Hades Run - 2D Endless Runner</title>
+  <!-- Google Fonts for modern design -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap"
+    rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="game-container">
+    <!-- Game Canvas -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- HUD (Heads-Up Display) -->
+    <div id="hud" class="hidden">
+      <div class="hud-top">
+        <div class="hud-stats">
+          <div class="hud-item" id="hud-score-container">
+            <span class="hud-label">SCORE</span>
+            <span class="hud-value" id="hud-score">000000</span>
+          </div>
+          <div class="hud-item" id="hud-distance-container">
+            <span class="hud-label">DISTANCE</span>
+            <span class="hud-value" id="hud-distance">0m</span>
+          </div>
+        </div>
+        <div class="hud-coins-container">
+          <div class="hud-coin-icon">🪙</div>
+          <span class="hud-value" id="hud-coins">0</span>
+        </div>
+      </div>
+
+      <!-- Active Power-up Indicators -->
+      <div id="powerup-indicators">
+        <!-- Indicators will be generated dynamically by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Screen Overlays -->
+
+    <!-- 1. Main Menu -->
+    <div id="menu-main" class="screen-overlay active">
+      <div class="glass-panel text-center">
+        <h1 class="game-title">NEBULA<span class="highlight">RUN</span></h1>
+        <p class="game-subtitle">An Infinite Space Odyssey</p>
+
+        <div class="menu-actions">
+          <button id="btn-play" class="btn btn-primary btn-glow">LAUNCH MISSION</button>
+          <button id="btn-daily" class="btn btn-secondary">DAILY CHALLENGE</button>
+          <div class="btn-row">
+            <button id="btn-skins-menu" class="btn btn-tertiary">SKINS</button>
+            <button id="btn-achievements-menu" class="btn btn-tertiary">AWARDS</button>
+          </div>
+          <div class="btn-row">
+            <button id="btn-stats-menu" class="btn btn-tertiary">STATS</button>
+            <button id="btn-settings-menu" class="btn btn-tertiary">SETTINGS</button>
+          </div>
+        </div>
+
+        <div class="high-score-banner">
+          <span>PERSONAL RECORD: </span>
+          <span id="menu-high-score">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Pause Menu -->
+    <div id="menu-pause" class="screen-overlay hidden">
+      <div class="glass-panel text-center">
+        <h2 class="menu-title">MISSION PAUSED</h2>
+        <p class="menu-subtitle">System status: Normal</p>
+
+        <div class="menu-actions">
+          <button id="btn-resume" class="btn btn-primary">RESUME</button>
+          <button id="btn-pause-restart" class="btn btn-secondary">RESTART</button>
+          <button id="btn-pause-quit" class="btn btn-danger">ABORT MISSION</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Game Over Screen -->
+    <div id="menu-gameover" class="screen-overlay hidden">
+      <div class="glass-panel text-center">
+        <h2 class="menu-title text-danger" id="gameover-title">MISSION COMPROMISED</h2>
+        <p class="menu-subtitle" id="gameover-reason">Collision detected</p>
+
+        <div class="stats-summary">
+          <div class="summary-item">
+            <span class="summary-label">FINAL SCORE</span>
+            <span class="summary-value highlight" id="summary-score">0</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">DISTANCE RUN</span>
+            <span class="summary-value" id="summary-distance">0m</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">COINS ACQUIRED</span>
+            <span class="summary-value" id="summary-coins">0</span>
+          </div>
+        </div>
+
+        <div id="new-high-score-badge" class="badge-new hidden">NEW HIGH SCORE!</div>
+
+        <div class="menu-actions">
+          <button id="btn-restart" class="btn btn-primary btn-glow">RE-LAUNCH</button>
+          <button id="btn-gameover-quit" class="btn btn-secondary">MAIN MENU</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Settings Panel -->
+    <div id="menu-settings" class="screen-overlay hidden">
+      <div class="glass-panel modal-panel">
+        <h2 class="menu-title">SETTINGS</h2>
+
+        <div class="settings-group">
+          <h3>AUDIO</h3>
+          <div class="setting-row">
+            <label for="slider-volume">Master Volume</label>
+            <div class="slider-container">
+              <input type="range" id="slider-volume" min="0" max="100" value="80">
+              <span id="volume-val">80%</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <label for="toggle-audio">Mute All Sound</label>
+            <input type="checkbox" id="toggle-audio" class="toggle-switch">
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h3>ENVIRONMENT</h3>
+          <div class="setting-row">
+            <label for="select-theme">Theme Profile</label>
+            <select id="select-theme" class="custom-select">
+              <option value="cyberpunk">Cyberpunk Neon</option>
+              <option value="forest">Mystic Forest</option>
+              <option value="desert">Solar Wasteland</option>
+              <option value="snow">Frozen Tundra</option>
+            </select>
+          </div>
+          <div class="setting-row">
+            <label for="toggle-weather">Dynamic Weather</label>
+            <input type="checkbox" id="toggle-weather" checked class="toggle-switch">
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h3>DATA CONTROL</h3>
+          <div class="setting-row">
+            <label>Reset Game Data</label>
+            <button id="btn-reset-data" class="btn btn-danger btn-sm">WIPE STORAGE</button>
+          </div>
+        </div>
+
+        <button id="btn-settings-back" class="btn btn-secondary btn-full">SAVE & RETURN</button>
+      </div>
+    </div>
+
+    <!-- 5. Achievements Panel -->
+    <div id="menu-achievements" class="screen-overlay hidden">
+      <div class="glass-panel modal-panel">
+        <h2 class="menu-title">AWARDS & COMMENDATIONS</h2>
+
+        <div class="scroll-container" id="achievements-list">
+          <!-- Achievements will be inserted dynamically by JS -->
+        </div>
+
+        <button id="btn-achievements-back" class="btn btn-secondary btn-full">BACK</button>
+      </div>
+    </div>
+
+    <!-- 6. Stats Panel -->
+    <div id="menu-stats" class="screen-overlay hidden">
+      <div class="glass-panel modal-panel">
+        <h2 class="menu-title">MISSION METRICS</h2>
+
+        <div class="scroll-container">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-num" id="stats-runs">0</span>
+              <span class="stat-name">Total Runs</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-num" id="stats-distance">0km</span>
+              <span class="stat-name">Total Distance</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-num" id="stats-coins">0</span>
+              <span class="stat-name">Coins Collected</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-num" id="stats-gems">0</span>
+              <span class="stat-name">Gems Found</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-num" id="stats-jumps">0</span>
+              <span class="stat-name">Jumps Performed</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-num" id="stats-slides">0</span>
+              <span class="stat-name">Slides Done</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-stats-back" class="btn btn-secondary btn-full">BACK</button>
+      </div>
+    </div>
+
+    <!-- 7. Skins / Character Customization Panel -->
+    <div id="menu-skins" class="screen-overlay hidden">
+      <div class="glass-panel modal-panel">
+        <h2 class="menu-title">HANGER & UPGRADES</h2>
+        <p class="menu-subtitle">Unlock custom suits with credits</p>
+
+        <div class="skins-display">
+          <div class="skin-preview-container">
+            <canvas id="skinPreviewCanvas" width="120" height="150"></canvas>
+            <div class="skin-info">
+              <h3 id="preview-skin-name">Astronaut Suit</h3>
+              <p id="preview-skin-desc">The standard issue spacesuit.</p>
+              <div id="skin-cost-container" class="skin-cost">
+                <span>Cost:</span> <span id="preview-skin-cost">🪙 0</span>
+              </div>
+            </div>
+          </div>
+          <div class="skins-grid-container scroll-container">
+            <div class="skins-grid" id="skins-grid">
+              <!-- Skins injected dynamically by JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="skins-footer-buttons">
+          <button id="btn-select-skin" class="btn btn-primary">EQUIP</button>
+          <button id="btn-skins-back" class="btn btn-secondary">BACK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HUD Buttons (Pause / Audio) -->
+    <div id="hud-controls" class="hidden">
+      <button id="btn-pause-toggle" class="btn-hud">⏸</button>
+      <button id="btn-audio-toggle" class="btn-hud">🔊</button>
+    </div>
+
+    <!-- Mobile Touch Area Help Indicators -->
+    <div id="mobile-help" class="hidden">
+      <div class="help-section help-left">
+        <span>TAP to Jump</span>
+      </div>
+      <div class="help-section help-right">
+        <span>SWIPE DOWN to Slide</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Scripts -->
+  <script src="script.js"></script>
+</body>
+
+</html>
