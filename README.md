@@ -1,88 +1,482 @@
-# Nebula Run - 2D Endless Runner Game
+# 🚀 Nebula Run - 2D Endless Runner Game
 
-An infinite space-themed odyssey built with HTML, CSS, and Vanilla JavaScript using the HTML5 Canvas API and Web Audio API. The game runs entirely in the browser with no external assets or package dependencies, utilizing high-quality procedural vector rendering and synth audio generation.
-
-## 🚀 Features
-
-### Core Gameplay
-- **Physics Engine**: Smooth gravity, acceleration, and friction.
-- **Movements**: Jumping, Double Jumping, and Sliding.
-- **Dynamic Difficulty**: Scroll speed increases gradually the longer you survive.
-
-### Environment & Themes
-- **Procedural Hills**: Infinite terrain generation including pits (gaps).
-- **Day/Night Cycle**: The sky dynamically changes through dawn, daytime, sunset, and twilight, affecting lighting and showing stars.
-- **Parallax Scrolling**: Three independent layers for backgrounds (distant mountains, hills, trees, and sky features).
-- **Multiple Theme Profiles**: Forest (rain), Desert (sunny wind), Snow (snowfall), and Cyberpunk (neon digital streams).
-
-### Entities & Collisions
-- **Obstacles**: Triangular spikes, double spikes, rocks, and logs.
-- **Enemies**: Ground rolling robots and flying bat-drones moving in sine-waves.
-- **Collectibles**: Credits (Coins) and high-value Gems.
-- **Power-Ups**:
-  - **Shield**: Protects from a single collision.
-  - **Warp Boost**: Makes you run ultra-fast and invulnerable.
-  - **Gravity Core (Magnet)**: Automatically attracts nearby coins/gems.
-  - **Double Score**: Multiplies score points multiplier by 2.
-
-### Metagame & Persistence
-- **Hangar (Skins shop)**: Unlock and equip custom skins (Astronaut, Cyber-Ninja, Neon-Robo, Solar Raider) using credits. Includes a running animation preview!
-- **Awards (Achievement system)**: Unlock 6 different awards tracking coins, score, jumps, and distance.
-- **Telemetry (Statistics)**: Persistent tracking of runs, total distance, jumps, slides, and gems collected.
-- **Daily Challenge Mode**: Generates a layout using a seed derived from today's date. The layout will be identical for everyone playing on the same day.
-- **Local Storage**: Saves high scores, skins unlocked, active equipped skin, completed daily challenges, and achievements.
-
-### Sound & Effects
-- **Procedural Sound Effects**: Synthesized audio for jumps, coins, gems, power-ups, hits, and ambient soundtrack generated using Web Audio API oscillator nodes.
-- **Mute & Volume Control**: Integrated sliders and buttons inside the settings HUD.
-- **Particles**: Dust trails on jumps, landing impact sparks, coin collection sparkles, hit explosions, and weather effects.
-- **Screen Shake**: Applied dynamically on player collision impact.
+An immersive space-themed endless runner built entirely with **HTML5 Canvas**, **Vanilla JavaScript**, **CSS3**, and the **Web Audio API**. Navigate an ever-changing world, collect valuable resources, unlock futuristic skins, complete daily challenges, and survive as long as possible in an infinite procedural universe.
 
 ---
 
-## 🕹️ Controls
+## 📖 Overview
 
-### Keyboard Controls
-- **Spacebar / Up Arrow**: Jump / Double Jump (if mid-air)
-- **Down Arrow**: Slide (reduces collider height to glide under flying drones)
+Nebula Run is a browser-based endless runner that combines fast-paced action, procedural world generation, dynamic weather systems, collectible rewards, and progression mechanics into a polished gaming experience.
 
-### Mobile Touch Controls
-- **Tap**: Jump
-- **Double Tap**: Double Jump
-- **Swipe Down**: Slide
+The entire game is rendered procedurally without external assets or dependencies. Graphics are generated using vector drawing techniques, while all sound effects and background audio are synthesized in real-time using the Web Audio API.
 
 ---
 
-## 📂 Project Structure
+## ✨ Features
 
+### 🎮 Core Gameplay
+
+* Infinite side-scrolling gameplay
+* Smooth physics-based movement system
+* Jump and Double Jump mechanics
+* Sliding mechanic for avoiding aerial hazards
+* Dynamic difficulty scaling
+* Increasing game speed based on survival time
+* Collision detection system
+* Responsive controls for desktop and mobile devices
+
+---
+
+### 🌍 Procedural Environment
+
+* Infinite terrain generation
+* Randomized obstacle placement
+* Procedural pits and terrain gaps
+* Day and night cycle
+* Dynamic lighting transitions
+* Animated sky system
+* Twinkling stars and atmospheric effects
+
+---
+
+### 🎨 Parallax Background System
+
+Multiple scrolling layers create depth and immersion:
+
+* Distant Mountains
+* Mid-ground Hills
+* Foreground Trees
+* Dynamic Sky Elements
+* Clouds and Stars
+
+Each layer scrolls independently to create a rich visual experience.
+
+---
+
+### 🌦 Theme System
+
+Choose from multiple unique environments:
+
+#### 🌲 Forest
+
+* Rain effects
+* Dense vegetation
+* Atmospheric fog
+
+#### 🏜 Desert
+
+* Bright sunlight
+* Wind particles
+* Sandy landscape
+
+#### ❄ Snow
+
+* Continuous snowfall
+* Frost effects
+* Ice-themed visuals
+
+#### 🌆 Cyberpunk
+
+* Neon lighting
+* Digital particles
+* Futuristic atmosphere
+
+---
+
+## ⚠ Obstacles
+
+Players must avoid a variety of hazards:
+
+* Single Spikes
+* Double Spikes
+* Rocks
+* Fallen Logs
+* Terrain Gaps
+* Rolling Robots
+* Flying Drone Enemies
+
+Obstacle frequency and complexity increase as the game progresses.
+
+---
+
+## 👾 Enemy Types
+
+### Ground Robots
+
+* Roll along terrain
+* Increase speed over time
+
+### Bat Drones
+
+* Fly in sine-wave patterns
+* Require precise timing to avoid
+* Can be bypassed using the slide mechanic
+
+---
+
+## 💎 Collectibles
+
+### Credits
+
+Primary currency used for unlocking skins.
+
+### Gems
+
+Rare high-value collectibles worth bonus points.
+
+Collectibles feature:
+
+* Attraction effects
+* Particle bursts
+* Collection animations
+* Audio feedback
+
+---
+
+## ⚡ Power-Up System
+
+### 🛡 Shield
+
+Absorbs one collision without ending the run.
+
+### 🚀 Warp Boost
+
+Provides temporary speed boost and invulnerability.
+
+### 🧲 Gravity Core
+
+Automatically attracts nearby collectibles.
+
+### ✨ Double Score
+
+Doubles all score gains while active.
+
+Each power-up includes:
+
+* Duration timer
+* Visual indicators
+* Particle effects
+* Audio cues
+
+---
+
+## 🏆 Achievement System
+
+Unlock achievements by completing milestones.
+
+Examples include:
+
+* First Run
+* Coin Collector
+* Gem Hunter
+* Marathon Runner
+* Jump Master
+* High Score Champion
+
+Achievement progress is automatically saved.
+
+---
+
+## 🎭 Hangar (Skin Shop)
+
+Unlock and equip unique character skins using collected credits.
+
+Available skins:
+
+* Astronaut
+* Cyber Ninja
+* Neon Robo
+* Solar Raider
+
+Features:
+
+* Purchase system
+* Preview animations
+* Persistent unlocks
+* Equipped skin saving
+
+---
+
+## 📊 Statistics Tracking
+
+Nebula Run records player progress across all sessions.
+
+Tracked statistics include:
+
+* Total Runs
+* Total Distance
+* Total Coins Collected
+* Total Gems Collected
+* Total Jumps
+* Total Slides
+* Highest Score
+* Longest Survival Time
+
+All data is stored locally.
+
+---
+
+## 📅 Daily Challenge Mode
+
+A special game mode generated from the current date.
+
+Features:
+
+* Shared daily seed
+* Identical challenge for all players
+* Separate leaderboard tracking
+* Daily completion rewards
+
+Each day presents a new challenge configuration.
+
+---
+
+## 🔊 Audio System
+
+All sounds are generated procedurally using the Web Audio API.
+
+Includes:
+
+* Background soundtrack
+* Jump effects
+* Coin collection sounds
+* Gem collection sounds
+* Power-up sounds
+* Collision effects
+* Achievement notifications
+
+No audio files are required.
+
+---
+
+## ✨ Visual Effects
+
+Nebula Run includes a rich visual effects system:
+
+* Dust trails
+* Landing impacts
+* Coin sparkles
+* Gem bursts
+* Shield effects
+* Weather particles
+* Explosions
+* Screen shake
+* Dynamic lighting
+
+---
+
+## 📱 Controls
+
+### Desktop
+
+| Key                  | Action      |
+| -------------------- | ----------- |
+| Space                | Jump        |
+| Up Arrow             | Jump        |
+| Space / Up (Mid-Air) | Double Jump |
+| Down Arrow           | Slide       |
+| Esc                  | Pause       |
+
+---
+
+### Mobile
+
+| Gesture    | Action      |
+| ---------- | ----------- |
+| Tap        | Jump        |
+| Double Tap | Double Jump |
+| Swipe Down | Slide       |
+
+---
+
+## 💾 Data Persistence
+
+Game data is automatically stored using Local Storage.
+
+Saved data includes:
+
+* High Scores
+* Statistics
+* Achievements
+* Unlocked Skins
+* Equipped Skin
+* Daily Challenge Progress
+* Audio Settings
+
+No account or internet connection is required.
+
+---
+
+## 🏗 Project Structure
+
+```text
+Nebula Run/
+│
+├── index.html
+├── style.css
+├── script.js
+└── README.md
 ```
-EndLess Runner/
-├── index.html       # Viewport structure, HUD displays, overlay panel models
-├── style.css        # Responsive viewport layout, glassmorphism templates, animations
-├── script.js        # Core game controllers, physics loops, audio synthesizers
-└── README.md        # Setup, controls, and architecture documentation
-```
 
-### Script Architecture: Class Hierarchy
+### index.html
 
-- **`PRNG`**: Seedable mulberry32 pseudo-random number generator.
-- **`SoundManager`**: Synthesizes and schedules game music and sound effects on-the-fly using browser oscillator, gain, and filter nodes.
-- **`InputHandler`**: Attaches listeners for keypresses and swipes, firing jumps and slides.
-- **`ParticleSystem` & `Particle`**: Manages dust, impact rings, sparkles, explosion bursts, and weather particles.
-- **`Player`**: Tracks character geometry, vertical physics, active power-up halos, and renders visual skins (Astronaut, Cyber Ninja, Neon Robo, Solar Raider).
-- **`Background` & `Layer`**: Handles sky gradient blends, cloud arrays, stars, and scrolling parallax layers.
-- **`Terrain`**: Procedural segment controller generating blocks and gaps (pits).
-- **`Entity`**: Base parent class for `Obstacle`, `Enemy`, `Collectible`, and `PowerUp`.
-- **`StatsManager`**: Handles read/write actions from browser LocalStorage.
-- **`AchievementManager`**: Monitors stats and triggers achievement announcements.
-- **`UIManager`**: Translates user menus, clicks, volume inputs, skin shops, and updates HUD progress meters.
-- **`Game`**: The central controller managing state, game ticking loop, collision filters, and difficulty ramps.
+Responsible for:
+
+* Game canvas
+* HUD elements
+* Menus
+* Overlay screens
+* Settings interface
+
+### style.css
+
+Responsible for:
+
+* Responsive layouts
+* Animations
+* Glassmorphism UI
+* Theme styling
+* Mobile optimization
+
+### script.js
+
+Contains:
+
+* Physics engine
+* Rendering pipeline
+* Entity systems
+* Audio engine
+* Game state management
+* Save system
+* User interface logic
 
 ---
 
-## 🔧 Installation & Running
+## 🧩 Architecture
 
-Since the game is completely self-contained:
-1. Simply double-click `index.html` to open the game in any modern browser (Chrome, Firefox, Safari, Edge).
-2. Alternatively, run a local web server (e.g., using VS Code's Live Server extension or running `npx serve .` in the terminal) to host it locally.
-3. Enjoy!
+### Core Classes
+
+#### PRNG
+
+Seedable pseudo-random number generator used for deterministic world generation and daily challenges.
+
+#### SoundManager
+
+Handles procedural music and sound effect generation.
+
+#### InputHandler
+
+Processes keyboard, mouse, and touch controls.
+
+#### ParticleSystem
+
+Creates and manages visual effects.
+
+#### Player
+
+Handles movement, collisions, animations, and power-up interactions.
+
+#### Background
+
+Manages environmental visuals and day/night transitions.
+
+#### Terrain
+
+Generates procedural platforms and pits.
+
+#### Entity
+
+Base class for all interactive objects.
+
+#### Obstacle
+
+Manages environmental hazards.
+
+#### Enemy
+
+Controls enemy behavior and movement.
+
+#### Collectible
+
+Handles coins and gems.
+
+#### PowerUp
+
+Controls temporary gameplay enhancements.
+
+#### StatsManager
+
+Stores player statistics and progression.
+
+#### AchievementManager
+
+Tracks achievement completion.
+
+#### UIManager
+
+Controls menus, HUD, and settings.
+
+#### Game
+
+Primary game controller responsible for the game loop and overall state management.
+
+---
+
+## 🚀 Getting Started
+
+### Requirements
+
+* Modern Web Browser
+* JavaScript Enabled
+
+Supported Browsers:
+
+* Chrome
+* Edge
+* Firefox
+* Safari
+
+### Run Locally
+
+1. Clone the repository
+
+```bash
+git clone <repository-url>
+```
+
+2. Open the project folder
+
+```bash
+cd nebula-run
+```
+
+3. Open `index.html`
+
+Or launch using a local development server:
+
+```bash
+npx serve
+```
+
+---
+
+## 🎯 Future Enhancements
+
+Planned features:
+
+* Online Leaderboards
+* Multiplayer Challenges
+* Additional Themes
+* Boss Encounters
+* Seasonal Events
+* New Power-Ups
+* Character Progression System
+* Cloud Save Support
+
+
+
+---
+
+## 👨‍💻 Author
+
+Developed as a modern browser-based endless runner showcasing procedural generation, HTML5 Canvas rendering, game architecture design, and advanced JavaScript programming techniques.
