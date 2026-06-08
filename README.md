@@ -1,3 +1,8 @@
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow)
+![HTML5](https://img.shields.io/badge/HTML5-Canvas-orange)
+![CSS3](https://img.shields.io/badge/CSS3-Responsive-blue)
+![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-red)
+
 # 🚀 Nebula Run
 
 ### A Procedural Space-Themed Endless Runner Built with HTML5 Canvas & Vanilla JavaScript
