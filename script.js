@@ -1,5 +1,5 @@
 /**
- * Nebula Run - 2D Endless Runner Game Engine
+ * Neptune Runner - 2D Endless Runner Game Engine
  * Written in Object-Oriented ES6 JavaScript (Canvas API & Web Audio API)
  */
 
@@ -1994,10 +1994,20 @@ class StatsManager {
 
   load() {
     try {
-      const saved = localStorage.getItem('nebulas_run_data');
+      const saved = localStorage.getItem('neptune_runner_data');
       if (saved) {
         const parsed = JSON.parse(saved);
         this.data = { ...this.data, ...parsed };
+      }
+      // Guarantee array types to prevent crashes on legacy local storage properties
+      if (!Array.isArray(this.data.unlockedSkins)) {
+        this.data.unlockedSkins = ['astronaut'];
+      }
+      if (!Array.isArray(this.data.completedDailySeeds)) {
+        this.data.completedDailySeeds = [];
+      }
+      if (typeof this.data.coins !== 'number') {
+        this.data.coins = 200;
       }
     } catch (e) {
       console.warn('Failed parsing save data from localStorage:', e);
@@ -2006,7 +2016,7 @@ class StatsManager {
 
   save() {
     try {
-      localStorage.setItem('nebulas_run_data', JSON.stringify(this.data));
+      localStorage.setItem('neptune_runner_data', JSON.stringify(this.data));
     } catch (e) {
       console.warn('Failed saving data to localStorage:', e);
     }
@@ -2050,8 +2060,8 @@ class StatsManager {
 
   wipeData() {
     try {
-      localStorage.removeItem('nebulas_run_data');
-      localStorage.removeItem('nebulas_run_achievements');
+      localStorage.removeItem('neptune_runner_data');
+      localStorage.removeItem('neptune_runner_achievements');
     } catch (e) {
       console.warn('Failed removing data from localStorage:', e);
     }
@@ -2094,7 +2104,7 @@ class AchievementManager {
 
   loadUnlocked() {
     try {
-      const saved = localStorage.getItem('nebulas_run_achievements');
+      const saved = localStorage.getItem('neptune_runner_achievements');
       if (saved) {
         this.unlockedIds = JSON.parse(saved) || [];
       }
@@ -2106,7 +2116,7 @@ class AchievementManager {
 
   saveUnlocked() {
     try {
-      localStorage.setItem('nebulas_run_achievements', JSON.stringify(this.unlockedIds));
+      localStorage.setItem('neptune_runner_achievements', JSON.stringify(this.unlockedIds));
     } catch (e) {
       console.warn('Failed to save achievements to localStorage:', e);
     }

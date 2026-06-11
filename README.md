@@ -1,4 +1,4 @@
-# Nebula Run - 2D Endless Runner Game
+# NepTune Runner - 2D Endless Runner Game
 
 An infinite space-themed odyssey built with HTML, CSS, and Vanilla JavaScript using the HTML5 Canvas API and Web Audio API. The game runs entirely in the browser with no external assets or package dependencies, utilizing high-quality procedural vector rendering and synth audio generation.
 
@@ -232,7 +232,7 @@ All statistics are automatically saved.
 
 # 🔊 Audio System
 
-Nebula Run uses the Web Audio API to generate all sounds procedurally. No audio files are required.
+NepTune Runner uses the Web Audio API to generate all sounds procedurally. No audio files are required.
 Generated sounds include:
 * Background music
 * Jump sounds
@@ -315,7 +315,7 @@ No account is required.
 # 📂 Project Structure
 
 ```text
-Nebula-Run/
+NepTune-Runner/
 │
 ├── index.html
 ├── style.css
@@ -440,7 +440,7 @@ Below is a detailed breakdown of all classes, constructors, methods, and functio
 
 ### 15. `StatsManager` (Local Storage Database)
 * **`constructor()`**: Setup schemas and triggers persistent file loads.
-* **`load()`**: Safely checks and parses stats from `localStorage` under keys `nebulas_run_data` (handles private browser errors).
+* **`load()`**: Safely checks and parses stats from `localStorage` under keys `neptune_runner_data` (handles private browser errors).
 * **`save()`**: Saves current statistics data to `localStorage`.
 * **`equippedSkin` (Getter/Setter)**: Reads or updates currently equipped skin tags in the database.
 * **`addStat(key, amount)`**: Increments numerical statistics columns (runs, distances, coins, jumps, slides).
@@ -506,7 +506,7 @@ git clone <repository-url>
 ```
 Navigate to the project:
 ```bash
-cd Nebula-Run
+cd NepTune-Runner
 ```
 Launch a local server:
 ```bash
