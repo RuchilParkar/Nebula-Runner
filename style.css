@@ -10,10 +10,10 @@
 
 :root {
   /* Default Theme Variables (Cyberpunk Neon) */
-  --primary: #ec4899;
-  --primary-glow: rgba(236, 72, 153, 0.4);
-  --secondary: #06b6d4;
-  --secondary-glow: rgba(6, 182, 212, 0.3);
+  --primary: #ff2a5f;
+  --primary-glow: rgba(255, 42, 95, 0.45);
+  --secondary: #05f9e2;
+  --secondary-glow: rgba(5, 249, 226, 0.35);
   --danger: #ef4444;
   --danger-glow: rgba(239, 68, 68, 0.4);
   --background-overlay: rgba(10, 10, 18, 0.8);

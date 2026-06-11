@@ -166,6 +166,28 @@ class SoundManager {
     osc.stop(this.ctx.currentTime + 0.3);
   }
 
+  // Land (Low thud sound on landing)
+  playLand() {
+    this.init();
+    if (!this.ctx || this.muted) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(120, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.1);
+
+    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.1);
+  }
+
   // Coin Chime (Two quick high pitches)
   playCoin() {
     this.init();
@@ -549,6 +571,11 @@ class ParticleSystem {
       p.update(dt, speedMult);
       return p.life > 0;
     });
+
+    // Cap maximum particles to prevent memory exhaustion and lag crashes
+    if (this.particles.length > 800) {
+      this.particles = this.particles.slice(-800);
+    }
   }
 
   draw(ctx) {
@@ -674,10 +701,10 @@ class Player {
     
     // Geometry (Relative to 1280x720 layout)
     this.x = 150;
-    this.groundY = 560; // Base ground height
-    this.y = this.groundY;
     this.width = 54;
     this.height = 80;
+    this.groundY = 560 - this.height; // Base ground height (feet at 560)
+    this.y = this.groundY;
     
     // Physics
     this.vy = 0;
@@ -722,7 +749,7 @@ class Player {
       this.doubleJumpAvailable = true;
       this.state = 'JUMPING';
       this.game.soundManager.playJump();
-      this.game.particleSystem.spawnJumpDust(this.x + this.width / 2, this.groundY);
+      this.game.particleSystem.spawnJumpDust(this.x + this.width / 2, this.groundY + this.height);
       this.game.statsManager.addStat('jumps', 1);
     } else if (this.doubleJumpAvailable || forceDouble) {
       this.vy = this.doubleJumpForce;
@@ -1789,7 +1816,7 @@ class Collectible extends Entity {
     
     // Pulse animation details
     this.pulseTime = Math.random() * Math.PI;
-    this.val = isGem ? 5 : 1; // coins/points weight
+    this.val = isGem ? 25 : 5; // coins/points weight (Upgraded: 5 per coin, 25 per gem)
   }
 
   update(dt, scrollSpeed) {
@@ -1953,7 +1980,7 @@ class StatsManager {
     this.data = {
       runs: 0,
       distance: 0,
-      coins: 0,
+      coins: 200, // Upgraded: Start with 200 coins
       gems: 0,
       jumps: 0,
       slides: 0,
@@ -1966,19 +1993,23 @@ class StatsManager {
   }
 
   load() {
-    const saved = localStorage.getItem('nebulas_run_data');
-    if (saved) {
-      try {
+    try {
+      const saved = localStorage.getItem('nebulas_run_data');
+      if (saved) {
         const parsed = JSON.parse(saved);
         this.data = { ...this.data, ...parsed };
-      } catch (e) {
-        console.error('Failed parsing save data:', e);
       }
+    } catch (e) {
+      console.warn('Failed parsing save data from localStorage:', e);
     }
   }
 
   save() {
-    localStorage.setItem('nebulas_run_data', JSON.stringify(this.data));
+    try {
+      localStorage.setItem('nebulas_run_data', JSON.stringify(this.data));
+    } catch (e) {
+      console.warn('Failed saving data to localStorage:', e);
+    }
   }
 
   get equippedSkin() {
@@ -2018,11 +2049,16 @@ class StatsManager {
   }
 
   wipeData() {
-    localStorage.removeItem('nebulas_run_data');
+    try {
+      localStorage.removeItem('nebulas_run_data');
+      localStorage.removeItem('nebulas_run_achievements');
+    } catch (e) {
+      console.warn('Failed removing data from localStorage:', e);
+    }
     this.data = {
       runs: 0,
       distance: 0,
-      coins: 0,
+      coins: 200, // Upgraded: Reset to 200 coins
       gems: 0,
       jumps: 0,
       slides: 0,
@@ -2031,6 +2067,9 @@ class StatsManager {
       equippedSkin: 'astronaut',
       completedDailySeeds: []
     };
+    if (this.game && this.game.achievementManager) {
+      this.game.achievementManager.unlockedIds = [];
+    }
     this.save();
   }
 }
@@ -2054,18 +2093,23 @@ class AchievementManager {
   }
 
   loadUnlocked() {
-    const saved = localStorage.getItem('nebulas_run_achievements');
-    if (saved) {
-      try {
-        this.unlockedIds = JSON.parse(saved);
-      } catch (e) {
-        this.unlockedIds = [];
+    try {
+      const saved = localStorage.getItem('nebulas_run_achievements');
+      if (saved) {
+        this.unlockedIds = JSON.parse(saved) || [];
       }
+    } catch (e) {
+      console.warn('Failed to load achievements from localStorage:', e);
+      this.unlockedIds = [];
     }
   }
 
   saveUnlocked() {
-    localStorage.setItem('nebulas_run_achievements', JSON.stringify(this.unlockedIds));
+    try {
+      localStorage.setItem('nebulas_run_achievements', JSON.stringify(this.unlockedIds));
+    } catch (e) {
+      console.warn('Failed to save achievements to localStorage:', e);
+    }
   }
 
   checkAchievements() {
@@ -2187,6 +2231,7 @@ class Game {
     // System Instantiations
     this.soundManager = new SoundManager();
     this.statsManager = new StatsManager();
+    this.statsManager.game = this;
     this.achievementManager = new AchievementManager(this);
     this.particleSystem = new ParticleSystem(this);
     this.player = new Player(this);
@@ -2197,51 +2242,51 @@ class Game {
     // Setup Theme settings
     this.themes = {
       cyberpunk: {
-        sky: '#020617',
-        farBG: '#0b0c16',
-        midBG: '#1a1d35',
-        nearBG: '#121528',
-        groundTop: '#1f1a3a',
-        groundBottom: '#0d0b1a',
-        primary: '#ec4899', // Pink
-        secondary: '#06b6d4', // Cyan
-        dust: 'rgba(236, 72, 153, 0.3)',
+        sky: '#06030f',
+        farBG: '#100b23',
+        midBG: '#1a103c',
+        nearBG: '#251654',
+        groundTop: '#0d0722',
+        groundBottom: '#04010b',
+        primary: '#ff2a5f', // Synthwave Glowing Rose
+        secondary: '#05f9e2', // Synthwave Electric Turquoise
+        dust: 'rgba(255, 42, 95, 0.3)',
         weather: 'cyberpunk'
       },
       forest: {
-        sky: '#064e3b',
-        farBG: '#064e3b',
-        midBG: '#065f46',
-        nearBG: '#047857',
-        groundTop: '#065f46',
-        groundBottom: '#022c22',
-        primary: '#10b981', // Green
-        secondary: '#f59e0b', // Amber
-        dust: 'rgba(16, 185, 129, 0.3)',
+        sky: '#020d0a',
+        farBG: '#051812',
+        midBG: '#08251b',
+        nearBG: '#0e3d2c',
+        groundTop: '#092d20',
+        groundBottom: '#020e0a',
+        primary: '#00f5aa', // Emerald Neon
+        secondary: '#ffd700', // Neon Gold
+        dust: 'rgba(0, 245, 170, 0.3)',
         weather: 'rain'
       },
       desert: {
-        sky: '#7c2d12',
-        farBG: '#7c2d12',
-        midBG: '#9a3412',
-        nearBG: '#c2410c',
-        groundTop: '#ea580c',
-        groundBottom: '#451a03',
-        primary: '#ea580c', // Orange
-        secondary: '#eab308', // Yellow
-        dust: 'rgba(234, 88, 12, 0.3)',
+        sky: '#140300',
+        farBG: '#220802',
+        midBG: '#3a0f03',
+        nearBG: '#581602',
+        groundTop: '#400f01',
+        groundBottom: '#180400',
+        primary: '#ff5500', // Solar Flare Orange
+        secondary: '#ffcc00', // Solar Flare Gold
+        dust: 'rgba(255, 85, 0, 0.3)',
         weather: 'none'
       },
       snow: {
-        sky: '#0f172a',
-        farBG: '#1e293b',
-        midBG: '#334155',
-        nearBG: '#475569',
+        sky: '#030712',
+        farBG: '#0b132b',
+        midBG: '#1c2541',
+        nearBG: '#3a506b',
         groundTop: '#e2e8f0',
         groundBottom: '#94a3b8',
-        primary: '#38bdf8', // Ice blue
-        secondary: '#f1f5f9', // Snow white
-        dust: 'rgba(255, 255, 255, 0.5)',
+        primary: '#00d2ff', // Neon Frost Blue
+        secondary: '#ffffff', // Snow White
+        dust: 'rgba(0, 210, 255, 0.4)',
         weather: 'snow'
       }
     };
@@ -2252,6 +2297,16 @@ class Game {
 
     // Setup GUI handlers
     this.ui = new UIManager(this);
+
+    // Initial audio setup (prevents frame-by-frame DOM querying in update loop)
+    try {
+      const initialMute = document.getElementById('toggle-audio').checked;
+      this.soundManager.setMute(initialMute);
+      const initialVolume = parseInt(document.getElementById('slider-volume').value) / 100;
+      this.soundManager.setVolume(initialVolume);
+    } catch (e) {
+      console.warn('Could not sync initial audio settings from DOM:', e);
+    }
 
     // Initial setup
     this.resizeCanvas();
@@ -2273,11 +2328,14 @@ class Game {
   resizeCanvas() {
     // Canvas sizing (1280x720 aspect ratio)
     const container = document.getElementById('game-container');
+    if (!container) return;
     const width = container.clientWidth;
     const height = container.clientHeight;
     
-    this.canvas.width = width;
-    this.canvas.height = height;
+    if (this.canvas) {
+      this.canvas.width = width;
+      this.canvas.height = height;
+    }
   }
 
   triggerScreenShake(duration = 0.25) {
@@ -2389,11 +2447,6 @@ class Game {
 
   update(dt) {
     // Always update visual stars, clouds, weather overlays even on menu
-    const isMuted = document.getElementById('toggle-audio').checked;
-    this.soundManager.setMute(isMuted);
-
-    const volumeVal = parseInt(document.getElementById('slider-volume').value) / 100;
-    this.soundManager.setVolume(volumeVal);
 
     // Dynamic weather particle additions
     if (this.ui.dynamicWeatherEnabled) {
@@ -2538,21 +2591,21 @@ class Game {
     const spawnRoll = this.prng.next();
     
     // Choose what to spawn
-    if (spawnRoll < 0.35) {
+    if (spawnRoll < 0.20) {
       // 1. Spawning Obstacles (Rocks, spikes, fallen logs)
       const list = ['spike_single', 'spike_double', 'rock', 'log'];
       const sub = this.prng.choice(list);
       this.entities.push(new Obstacle(this, 1350, sub));
-    } else if (spawnRoll >= 0.35 && spawnRoll < 0.55) {
+    } else if (spawnRoll >= 0.20 && spawnRoll < 0.35) {
       // 2. Spawning Enemies (Ground/Flying)
       const list = ['ground', 'flying'];
       const sub = this.prng.choice(list);
       this.entities.push(new Enemy(this, 1350, sub));
-    } else if (spawnRoll >= 0.55 && spawnRoll < 0.85) {
-      // 3. Spawning Coins or Gems line layout
+    } else if (spawnRoll >= 0.35 && spawnRoll < 0.85) {
+      // 3. Spawning Coins or Gems line layout (Increased rate to 50% spawn rate)
       const isGem = this.prng.next() < 0.15; // 15% Gem chance
       const coinHeight = this.prng.choice([500, 420, 320]); // low, mid, high heights
-      const patternLength = this.prng.choice([3, 4, 5]);
+      const patternLength = this.prng.choice([6, 7, 8, 9, 10, 11]); // Upgraded: longer patterns
 
       for (let i = 0; i < patternLength; i++) {
         // space pattern entries sequentially
@@ -2560,7 +2613,11 @@ class Game {
         // Draw coins in arch wave shape
         const angle = (i / (patternLength - 1)) * Math.PI;
         const py = coinHeight - Math.sin(angle) * 50;
+        
+        // Spawn main row (which can contain a gem in the middle)
         this.entities.push(new Collectible(this, px, py, isGem && i === Math.floor(patternLength / 2)));
+        // Spawn parallel double row (36px above main row)
+        this.entities.push(new Collectible(this, px, py - 36, false));
       }
     } else {
       // 4. Spawning Power-up (Shield, Speed, Magnet, Multiplier)
