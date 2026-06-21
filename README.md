@@ -1,4 +1,4 @@
-# NepTune Runner - 2D Endless Runner Game
+# NepTune Run - 2D Endless Runner Game
 
 An infinite space-themed odyssey built with HTML, CSS, and Vanilla JavaScript using the HTML5 Canvas API and Web Audio API. The game runs entirely in the browser with no external assets or package dependencies, utilizing high-quality procedural vector rendering and synth audio generation.
 
